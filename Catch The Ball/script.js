@@ -27,6 +27,9 @@ let catcher = {
   color: "white",
 };
 
+let initialLives = 3;
+let lives = initialLives;
+
 let score = 0;
 let mouseX = canvas.width / 2;
 
@@ -58,10 +61,16 @@ function update() {
 
   // 🚫 Si la bola cae fuera del canvas
   if (ball.y > canvas.height) {
-    alert(`💀 Game Over! Score: ${score}`);
-    score = 0;
-    ball.speed = 3;
-    resetBall();
+    lives--;
+    if (lives > 0) {
+      resetBall();
+    } else {
+      alert(`💀 Game Over! Score: ${score}`);
+      lives = initialLives;
+      score = 0;
+      ball.speed = 3;
+      resetBall();
+    }
   }
 }
 
@@ -89,6 +98,44 @@ function draw() {
   ctx.fillStyle = "white";
   ctx.font = "18px Arial";
   ctx.fillText("Score: " + score, 10, 25);
+
+  // Dibuja las vidas
+  drawLives(20, 40, lives);
+}
+
+function drawHeart(x, y, size) {
+  ctx.beginPath();
+  const topCurveHeight = size * 0.3;
+  ctx.moveTo(x, y + topCurveHeight);
+  ctx.bezierCurveTo(
+    x, y,
+    x - size / 2, y,
+    x - size / 2, y + topCurveHeight
+  );
+  ctx.bezierCurveTo(
+    x - size / 2, y + (size + topCurveHeight)/2,
+    x, y + (size + topCurveHeight)/1.5,
+    x, y + size
+  );
+  ctx.bezierCurveTo(
+    x, y + (size + topCurveHeight)/1.5,
+    x + size / 2, y + (size + topCurveHeight)/2,
+    x + size / 2, y + topCurveHeight
+  );
+  ctx.bezierCurveTo(
+    x + size / 2, y,
+    x, y,
+    x, y + topCurveHeight
+  );
+  ctx.fillStyle = "red";
+  ctx.fill();
+}
+
+// Dibuja todas las vidas
+function drawLives(x, y, lives, size = 20) {
+  for (let i = 0; i < lives; i++) {
+    drawHeart(x + i * (size + 5), y, size);
+  }
 }
 
 // 🌀 Bucle del juego
