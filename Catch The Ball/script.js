@@ -15,7 +15,7 @@ let ball = {
   y: 0,
   radius: 15,
   speed: 3,
-  color: "red",
+  color: "blue",
 };
 
 // 🧍 Control del jugador (la barra)
@@ -28,12 +28,14 @@ let catcher = {
 };
 
 let score = 0;
+let vida = 3;
 let mouseX = canvas.width / 2;
 
 // 🖱 Evento: mover el mouse
 canvas.addEventListener("mousemove", (e) => {
   const rect = canvas.getBoundingClientRect();
   mouseX = e.clientX - rect.left;
+
 });
 
 // ⚙️ Actualizar posición y lógica
@@ -43,6 +45,12 @@ function update() {
 
   // Actualiza la posición del catcher
   catcher.x = mouseX - catcher.width / 2;
+
+  if(catcher.x < 10){
+    catcher.x = 10
+  } else if(catcher.x > 305){
+    catcher.x = 305
+  }
 
   // 🧮 Detección de colisión (bola vs catcher)
   if (
@@ -58,10 +66,15 @@ function update() {
 
   // 🚫 Si la bola cae fuera del canvas
   if (ball.y > canvas.height) {
-    alert(`💀 Game Over! Score: ${score}`);
-    score = 0;
-    ball.speed = 3;
-    resetBall();
+    if(vida <= 0){
+        alert(`💀 Game Over! Score: ${score}`);
+        score = 0;
+        ball.speed = 3;
+        resetBall();
+    } else{
+      vida = vida - 1;
+    }
+    
   }
 }
 
@@ -89,6 +102,7 @@ function draw() {
   ctx.fillStyle = "white";
   ctx.font = "18px Arial";
   ctx.fillText("Score: " + score, 10, 25);
+  ctx.fillText("Vidas: " + vida, 10, 45);
 }
 
 // 🌀 Bucle del juego
