@@ -73,6 +73,7 @@ function update() {
         resetBall();
     } else{
       vida = vida - 1;
+      resetBall()
     }
     
   }
